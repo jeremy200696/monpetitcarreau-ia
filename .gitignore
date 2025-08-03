@@ -1,0 +1,5 @@
+# Ne jamais suivre ces fichiers sensibles/local
+.env
+node_modules/
+uploads/
+.DS_Store
