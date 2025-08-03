@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mon Petit Carreau - Générateur IA</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    textarea, input, button { font-size: 1rem; margin-bottom: 10px; }
+    img { margin-top: 20px; max-width: 400px; border-radius: 12px; }
+    #result { margin-top: 30px; }
+  </style>
+</head>
+<body>
+  <h2>Essayez notre IA déco !</h2>
+  <form id="genForm">
+    <label for="prompt">Décrivez votre projet déco :</label><br>
+    <textarea id="prompt" name="prompt" rows="4" cols="50" required></textarea><br><br>
+
+    <label for="image">Uploadez une photo de votre pièce :</label>
+    <input type="file" id="image" name="image" accept="image/*" required><br><br>
+
+    <button type="submit">Générer mon projet !</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('genForm').onsubmit = async function(event) {
+      event.preventDefault();
+      const formData = new FormData();
+      formData.append('prompt', document.getElementById('prompt').value);
+      formData.append('image', document.getElementById('image').files[0]);
+
+      document.getElementById('result').innerHTML = "Génération en cours, merci de patienter...";
+
+      try {
+        const response = await fetch('http://localhost:3001/api/generate', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await response.json();
+
+        if (data.imageUrl) {
+          document.getElementById('result').innerHTML = `<img src="${data.imageUrl}" alt="Résultat IA"><br><a href="${data.imageUrl}" target="_blank">Télécharger l'image</a>`;
+        } else {
+          document.getElementById('result').innerHTML = "Erreur : " + (data.error || 'Erreur inconnue.');
+        }
+      } catch (err) {
+        document.getElementById('result').innerHTML = "Erreur de connexion au serveur.";
+      }
+    }
+  </script>
+</body>
+</html>
