@@ -10,6 +10,11 @@ const upload = multer({ dest: 'uploads/' });
 app.use(cors());
 app.use(express.json());
 
+// === ROUTE D'ACCUEIL pour Render (page test) ===
+app.get('/', (req, res) => {
+  res.send('Le serveur IA est en ligne !');
+});
+
 app.post('/api/generate', upload.single('image'), async (req, res) => {
   const prompt = req.body.prompt;
   const image = req.file;
